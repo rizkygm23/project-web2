@@ -28,7 +28,7 @@ class 17230266PanelProvider extends PanelProvider
             ->path('17230266')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::bg-teal-600,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

@@ -8,9 +8,28 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class)->latestOfMany();
+    }
+
+    public function isSubscribed()
+    {
+        return $this->subscription &&
+            $this->subscription->expires_at &&
+            now()->lessThan($this->subscription->expires_at);
+    }
+
+    public function isPremium()
+    {
+        return optional($this->subscription)
+            ->expires_at?->isFuture() ?? false;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +41,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'is_premium',
     ];
     /**
      * The attributes that should be hidden for serialization.

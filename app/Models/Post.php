@@ -14,7 +14,19 @@ class Post extends Model
     'content',
     'author',
     'published_at',
+    'category_id',
+    'views',
+    'is_premium'
 ];
+public function incrementViews()
+{
+    $this->views++;
+    $this->save();
+}
+
+public function index(){
+    return view('index');
+}
 
     public function user()
 {
@@ -28,8 +40,14 @@ public function comments()
 
     public function getThumbnailUrlAttribute()
     {
-        return asset('storage/thumbnails/' . $this->thumbnail);
+        return asset('storage/' . $this->thumbnail);
     }
+
+    public function category()
+{
+    return $this->belongsTo(Category::class);
+}
+
     
     
     

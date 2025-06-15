@@ -19,10 +19,11 @@ use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\PostResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\DateTimeColumn;
+
+use function PHPUnit\Framework\assertNotFalse;
 
 class PostResource extends Resource
 {
@@ -41,23 +42,34 @@ class PostResource extends Resource
                     ->required()
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn($state, callable $set) => $set('slug', Str::slug($state))),
+                Select::make('category_id')
+                    ->label('Kategori')
+                    ->relationship('category', 'name')
+                    ->required(),
 
                 TextInput::make('slug')
                     ->disabled()
                     ->required()
                     ->dehydrated(),
 
-                    FileUpload::make('thumbnail')
+                Forms\Components\Toggle::make('is_premium')
+                    ->label('Premium')
+                    ->default(false),
+                  
+                    
+
+                FileUpload::make('thumbnail')
                     ->image()
                     ->disk('public')
                     ->directory('thumbnails')
                     ->visibility('public')
                     ->multiple(false)
                     ->required()
-                    ->getUploadedFileNameForStorageUsing(fn ($file) =>
+                    ->getUploadedFileNameForStorageUsing(
+                        fn($file) =>
                         Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) .
-                        '.' . $file->getClientOriginalExtension()
-            ),
+                            '.' . $file->getClientOriginalExtension()
+                    ),
 
                 RichEditor::make('content')
                     ->required()
@@ -84,7 +96,9 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                // ->disableClick(),
+                TextColumn::make('views')
+                    ->label('Dilihat')
+                    ->sortable(),
 
                 ImageColumn::make('thumbnail')
                     ->disk('public')
@@ -95,7 +109,12 @@ class PostResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('published_at') // <- Bukan DateTimeColumn
+                TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('published_at')
                     ->label('Tanggal Publish')
                     ->dateTime('d M Y H:i')
                     ->sortable(),
@@ -115,6 +134,17 @@ class PostResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (auth()->user()->role === 'penulis') {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
     }
 
     public static function getRelations(): array
