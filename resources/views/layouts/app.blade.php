@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <title> Wawasan+</title>
+    <title> WawasanPlus</title>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}">
 

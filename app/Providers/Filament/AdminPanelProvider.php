@@ -25,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandName('WawasanPlus')
             ->id('admin')
             ->path('admin')
             ->login()
@@ -69,4 +70,8 @@ class AdminPanelProvider extends PanelProvider
         OverviewStats::class,
     ];
 }
+ public function getTitle(): string
+    {
+        return 'WawasanPlus';
+    }
 }
