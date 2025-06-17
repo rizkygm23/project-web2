@@ -68,5 +68,6 @@ Route::get('/transaksi', [TransaksiController::class, 'getToken'])->name('transa
 Route::get('/transaksi/token', [TransaksiController::class, 'getToken'])->name('transaksi.token');
 Route::post('/midtrans/callback', [TransaksiController::class, 'handleCallback']);
 Route::post('/langganan/activate', [TransaksiController::class, 'activate'])->middleware('auth');
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 
 

@@ -1,24 +1,23 @@
 <?php
 
+// app/Http/Controllers/CommentController.php
+
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
-use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Models\Comment;
 
 class CommentController extends Controller
 {
-    public function store(Request $request, Post $post)
+    public function store(Request $request)
     {
         $request->validate([
+            'post_id' => 'required|exists:posts,id',
             'name' => 'required|string|max:255',
-            'comment' => 'required|string',
+            'comment' => 'required|string|max:1000',
         ]);
 
-        $post->comments()->create([
-            'name' => $request->name,
-            'comment' => $request->comment,
-        ]);
+        Comment::create($request->only('post_id', 'name', 'comment'));
 
         return back()->with('success', 'Komentar berhasil dikirim!');
     }

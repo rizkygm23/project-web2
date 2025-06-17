@@ -11,5 +11,44 @@
         </div>
 
         <p class="text-sm text-gray-500 mt-6">Penulis: {{ $post->author }}</p>
+
+        <!-- Komentar Section -->
+        <div class="max-w-4xl mx-auto mt-12 px-4">
+    <h3 class="text-xl font-semibold mb-4">Komentar</h3>
+
+    @foreach($comments as $comment)
+        <div class="bg-white p-4 rounded shadow mb-3">
+            <p class="font-bold">{{ $comment->name }}</p>
+            <p class="text-sm text-gray-600">{{ $comment->created_at->diffForHumans() }}</p>
+            <p class="mt-2">{{ $comment->comment }}</p>
+        </div>
+    @endforeach
+
+    @if ($hasMore)
+        <div class="text-center mt-4">
+            <a href="{{ request()->fullUrlWithQuery(['limit' => $limit + 5]) }}"
+               class="inline-block text-teal-600 font-semibold hover:underline">
+                Lihat lebih banyak
+            </a>
+        </div>
+    @endif
+
+    {{-- Form Komentar --}}
+    <form action="{{ route('comments.store') }}" method="POST" class="bg-white p-4 rounded shadow mt-6">
+        @csrf
+        <input type="hidden" name="post_id" value="{{ $post->id }}">
+        <div class="mb-3">
+            <label for="name" class="block text-sm font-medium">Nama</label>
+            <input type="text" name="name" class="w-full border rounded px-3 py-2" required>
+        </div>
+        <div class="mb-3">
+            <label for="comment" class="block text-sm font-medium">Komentar</label>
+            <textarea name="comment" rows="4" class="w-full border rounded px-3 py-2" required></textarea>
+        </div>
+        <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Kirim</button>
+    </form>
+</div>
+
+
     </div>
 @endsection

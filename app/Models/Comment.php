@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 // {   
 //     use HasFactory;
 // }
+// app/Models/Comment.php
+
+
 class Comment extends Model
 {
     protected $fillable = ['post_id', 'name', 'comment'];
@@ -17,6 +20,12 @@ class Comment extends Model
     {
         return $this->belongsTo(Post::class);
     }
-    
-    use HasFactory;
+    // app/Models/Post.php
+public function comments()
+{
+    return $this->hasMany(Comment::class);
 }
+
+
+}
+

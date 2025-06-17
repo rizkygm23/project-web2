@@ -17,6 +17,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Subscription::class)->latestOfMany();
     }
+    public function subscriptions()
+{
+    return $this->hasOne(Subscription::class);
+}
 
     public function isSubscribed()
     {
@@ -30,6 +34,13 @@ class User extends Authenticatable
         return optional($this->subscription)
             ->expires_at?->isFuture() ?? false;
     }
+
+    public function isPremiums()
+{
+    return $this->subscription &&
+           $this->subscription->expires_at &&
+           $this->subscription->expires_at->isFuture();
+}
 
     /**
      * The attributes that are mass assignable.

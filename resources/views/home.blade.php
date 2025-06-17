@@ -49,7 +49,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 h-fit ">
                 @foreach ($latestPosts as $post)
                     <div
-                        class="bg-white skeleton rounded-xl shadow hover:shadow-md transition overflow-hidden flex flex-col h-full">
+                        class="bg-white  skeleton rounded-xl shadow hover:shadow-md transition overflow-hidden flex flex-col h-full">
                         <img src="{{ $post->getThumbnailUrlAttribute() }}" alt="{{ $post->title }}"
                             class="h-32 w-full object-cover hover:cursor-zoom-in transition-transform duration-300 transform hover:scale-105">
 
@@ -59,9 +59,14 @@
                                     {{ $post->created_at->diffForHumans() }}</p>
                                 <h4 class="text-xl font-semibold mt-1">{{ Str::limit($post->title, 50) }}</h4>
                             </div>
-                            <a href="{{ route('posts.show', $post->slug) }}"
-                                class="text-blue-500 text-xs font-normal bg-blue-100 rounded px-2 py-1 w-fit ">Read
-                                more</a>
+                            <a href="{{ $post->is_premium && (!auth()->check() || !auth()->user()->isPremium()) ? '#pricing' : route('posts.show', $post->slug) }}"
+                                class="text-xs font-normal rounded px-2 py-1 w-fit 
+        {{ $post->is_premium && (!auth()->check() || !auth()->user()->isPremium())
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            : 'bg-blue-100 text-blue-500 hover:bg-blue-200' }}">
+                                {{ $post->is_premium && (!auth()->check() || !auth()->user()->isPremium()) ? 'Locked' : 'Read more' }}
+
+                            </a>
 
                         </div>
                     </div>
@@ -84,9 +89,9 @@
                                     {{ $post->created_at->diffForHumans() }}</p>
                                 <h4 class="text-xl font-semibold mt-1">{{ Str::limit($post->title, 50) }}</h4>
                             </div>
-                            <a href="{{ $post->is_premium && (!auth()->check() || !auth()->user()->is_subscribed) ? '#' : route('posts.show', $post->slug) }}"
+                            <a href="{{ $post->is_premium && (!auth()->check() || !auth()->user()->isPremium()) ? '#pricing' : route('posts.show', $post->slug) }}"
                                 class="text-xs font-normal rounded px-2 py-1 w-fit 
-        {{ $post->is_premium && (!auth()->check() || !auth()->user()->is_subscribed)
+        {{ $post->is_premium && (!auth()->check() || !auth()->user()->isPremium())
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-blue-100 text-blue-500 hover:bg-blue-200' }}">
                                 {{ $post->is_premium && (!auth()->check() || !auth()->user()->isPremium()) ? 'Locked' : 'Read more' }}
@@ -115,170 +120,155 @@
         </div>
     </div>
 
-    <section class="py-12 bg-gray-100">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8 text-teal-600">Pilih Paket Anda</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section id="pricing" class="py-12 bg-gray-100 pt-24">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8 text-teal-600">Pilih Paket Anda</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-                <!-- Paket Dasar (Saat Ini) -->
-                <div class="card bg-white shadow-sm rounded-xl flex flex-col">
-                    <div class="card-body p-6 flex-1 flex flex-col justify-between">
+            <!-- Paket Dasar -->
+            <div class="card bg-white shadow-sm rounded-xl flex flex-col">
+                <div class="card-body p-6 flex-1 flex flex-col justify-between">
+                    @if (auth()->check() && !auth()->user()->isPremium())
                         <span class="badge badge-outline badge-lg">Paket Saat Ini</span>
-                        <div class="mt-4">
-                            <h2 class="text-2xl font-bold">Dasar</h2>
-                            <span class="text-xl text-gray-600">Rp 0/bulan</span>
-                        </div>
-                        <ul class="mt-6 space-y-3 text-sm">
-                            <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Akses 10 artikel</span>
-                            </li>
-                            <li class="opacity-50 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span class="line-through">Akses tak terbatas</span>
-                            </li>
-                            <li class="opacity-50 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span class="line-through">Tanpa iklan</span>
-                            </li>
-                            <li class="opacity-50 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span class="line-through">Konten eksklusif</span>
-                            </li>
-                        </ul>
-                        <button class="btn btn-disabled mt-6">Saat Ini</button>
+                    @endif
+                    <div class="mt-4">
+                        <h2 class="text-2xl font-bold">Dasar</h2>
+                        <span class="text-xl text-gray-600">Rp 0/bulan</span>
                     </div>
+                    <ul class="mt-6 space-y-3 text-sm">
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Akses 10 artikel</span>
+                        </li>
+                        <li class="opacity-50 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="line-through">Akses tak terbatas</span>
+                        </li>
+                        <li class="opacity-50 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="line-through">Tanpa iklan</span>
+                        </li>
+                        <li class="opacity-50 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span class="line-through">Konten eksklusif</span>
+                        </li>
+                    </ul>
+                    <button class="btn btn-disabled mt-6">Saat Ini</button>
                 </div>
+            </div>
 
-                <!-- Premium 1 Bulan -->
-                <div class="card bg-white shadow-sm rounded-xl flex flex-col group">
-                    <div class="card-body p-6 flex-1 flex flex-col justify-between">
-                        <span class="badge badge-xs badge-warning">Paling Populer</span>
+            <!-- Premium 1 Bulan -->
+            <div class="card bg-white shadow-sm rounded-xl flex flex-col">
+                <div class="card-body p-6 flex-1 flex flex-col justify-between">
+                    @if (auth()->check() && auth()->user()->isPremium())
+                        <span class="badge badge-success badge-lg">Aktif</span>
                         <div class="mt-4">
                             <h2 class="text-2xl font-bold">Premium</h2>
                             <span class="text-xl">Rp 99.000/bulan</span>
                         </div>
                         <ul class="mt-6 space-y-3 text-sm">
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Akses tak terbatas</span>
                             </li>
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Tanpa iklan</span>
                             </li>
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Konten eksklusif</span>
                             </li>
                         </ul>
-                        <button
-                            class="btn bg-teal-600 subscribe-btn text-white btn-block mt-6 transition-transform transform group-hover:scale-105"
-                            data-plan="1">
-                            Langganan 1 Bulan
-                        </button>
-                    </div>
+                        <button class="btn btn-disabled mt-6">Paket Saat Ini</button>
+                    @else
+                        
+                        <button class="btn bg-teal-600 subscribe-btn text-white btn-block mt-6 transition-transform transform group-hover:scale-105 hover:bg-teal-500" data-plan="1">Langganan 1 Bulan</button>
+                    @endif
                 </div>
+            </div>
 
-                <!-- Premium 6 Bulan -->
-                <div class="card bg-white shadow-sm rounded-xl flex flex-col group">
-                    <div class="card-body p-6 flex-1 flex flex-col justify-between">
-                        <span class="badge badge-outline badge-lg">Hemat 10%</span>
+            <!-- Premium 6 Bulan -->
+            <div class="card bg-white shadow-sm rounded-xl flex flex-col">
+                <div class="card-body p-6 flex-1 flex flex-col justify-between">
+                    @if (auth()->check() && auth()->user()->isPremium())
+                        <span class="badge badge-success badge-lg">Aktif</span>
                         <div class="mt-4">
                             <h2 class="text-2xl font-bold">Premium</h2>
                             <span class="text-xl">Rp 529.000/6 bulan</span>
                         </div>
                         <ul class="mt-6 space-y-3 text-sm">
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Semua fitur Premium</span>
                             </li>
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Dukungan prioritas</span>
                             </li>
                         </ul>
-                        <button
-                            class="btn bg-teal-600 subscribe-btn text-white btn-block mt-6 transition-transform transform group-hover:scale-105"
-                            data-plan="6">
-                            Langganan 6 Bulan
-                        </button>
-                    </div>
+                        <button class="btn btn-disabled mt-6">Paket Saat Ini</button>
+                    @else
+                        
+                        <button class="btn bg-teal-600 subscribe-btn text-white btn-block mt-6 transition-transform transform group-hover:scale-105 hover:bg-teal-500" data-plan="6">Langganan 6 Bulan</button>
+                    @endif
                 </div>
+            </div>
 
-                <!-- Premium 12 Bulan -->
-                <div class="card bg-white shadow-sm rounded-xl flex flex-col group">
-                    <div class="card-body p-6 flex-1 flex flex-col justify-between">
-                        <span class="badge badge-outline badge-lg">Nilai Terbaik</span>
+            <!-- Premium 12 Bulan -->
+            <div class="card bg-white shadow-sm rounded-xl flex flex-col">
+                <div class="card-body p-6 flex-1 flex flex-col justify-between">
+                    @if (auth()->check() && auth()->user()->isPremium())
+                        <span class="badge badge-success badge-lg">Aktif</span>
+                       
                         <div class="mt-4">
                             <h2 class="text-2xl font-bold">Premium</h2>
                             <span class="text-xl">Rp 1.049.000/12 bulan</span>
                         </div>
                         <ul class="mt-6 space-y-3 text-sm">
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Semua fitur Premium</span>
                             </li>
                             <li class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Manajer akun khusus</span>
                             </li>
                         </ul>
-                        <button
-                            class="btn btn-block subscribe-btn bg-teal-600 text-white mt-6 transition-transform transform group-hover:scale-105"
-                            data-plan="12">
-                            Langganan 12 Bulan
-                        </button>
-                    </div>
+                         <button class="btn btn-disabled mt-6">Paket Saat Ini</button>
+                    @else
+                        
+                        <button class="btn btn-block subscribe-btn bg-teal-600 text-white mt-6 transform transition-transform duration-300 group-hover:scale-105 hover:bg-teal-500 " data-plan="12">Langganan 12 Bulan</button>
+                    @endif
                 </div>
-
             </div>
+
         </div>
-    </section>
+    </div>
+</section>
+
 
 
 

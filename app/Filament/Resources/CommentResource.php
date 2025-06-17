@@ -28,23 +28,23 @@ class CommentResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+  {
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('name'),
+            Tables\Columns\TextColumn::make('comment')->limit(50),
+            Tables\Columns\TextColumn::make('post.title')->label('Post'),
+            Tables\Columns\TextColumn::make('created_at')->since(),
+        ])
+        ->filters([])
+        ->actions([
+            // Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\DeleteBulkAction::make(),
+        ]);
+}
 
     public static function getRelations(): array
     {
@@ -64,5 +64,14 @@ class CommentResource extends Resource
     public static function shouldRegisterNavigation(): bool
 {
     return auth()->user()?->role === 'admin' || 'penulis';
+
+}
+
+public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+        ->whereHas('post', function ($query) {
+            $query->where('user_id', auth()->id());
+        });
 }
 }
