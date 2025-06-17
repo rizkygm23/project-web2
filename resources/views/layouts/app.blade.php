@@ -46,7 +46,8 @@
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 </head>
 
-<body class="font-sans antialiased">
+<body class="font-sans antialiased ">
+    
     <div>
         @include('layouts.navigation')
 
@@ -63,59 +64,91 @@
         <main>
             @yield('content')
         </main>
+        @if (session('success'))
+        <div id="alert" role="alert"class="alert alert-success mt-4 mx-auto max-w-xl transition-opacity duration-500 fixed right-10 bottom-10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div id="alert" role="alert"class="alert alert-error mt-4 mx-auto max-w-xl transition-opacity duration-500 fixed right-10 bottom-10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
         <!-- Modal Login/Register -->
-<div id="authModal" class="fixed inset-0 bg-gray-100/5 hidden z-50 flex items-center justify-center px-4">
-  <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
-    <button id="closeAuthModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        <div id="authModal" class="fixed inset-0 bg-gray-100/5 hidden z-50 flex items-center justify-center px-4">
+            <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
+                <button id="closeAuthModal"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
 
-    <div class="flex gap-2 mb-6">
-      <button data-tab="login" class="flex-1 text-center py-2 font-medium border-b-2 border-teal-600 text-teal-600 hover:bg-teal-50 rounded-t">Login</button>
-      <button data-tab="register" class="flex-1 text-center py-2 font-medium border-b-2 border-transparent text-gray-500 hover:bg-gray-100 rounded-t">Daftar</button>
-    </div>
+                <div class="flex gap-2 mb-6">
+                    <button data-tab="login"
+                        class="flex-1 text-center py-2 font-medium border-b-2 border-teal-600 text-teal-600 hover:bg-teal-50 rounded-t">Login</button>
+                    <button data-tab="register"
+                        class="flex-1 text-center py-2 font-medium border-b-2 border-transparent text-gray-500 hover:bg-gray-100 rounded-t">Daftar</button>
+                </div>
 
-    <!-- Login Tab -->
-    <div id="loginTab" class="auth-tab">
-      <fieldset class="border border-teal-300 rounded-lg p-4">
-        <legend class="text-teal-600 px-2 font-semibold">Login</legend>
+                <!-- Login Tab -->
+                <div id="loginTab" class="auth-tab">
+                    <fieldset class="border border-teal-300 rounded-lg p-4">
+                        <legend class="text-teal-600 px-2 font-semibold">Login</legend>
 
-        <form method="POST" action="{{ route('login') }}">
-          @csrf
-          <label class="label">Email</label>
-          <input name="email" type="email" placeholder="Email" class="input input-bordered w-full mb-3" required>
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+                            <label class="label">Email</label>
+                            <input name="email" type="email" placeholder="Email"
+                                class="input input-bordered w-full mb-3" required>
 
-          <label class="label">Password</label>
-          <input name="password" type="password" placeholder="Password" class="input input-bordered w-full mb-3" required>
+                            <label class="label">Password</label>
+                            <input name="password" type="password" placeholder="Password"
+                                class="input input-bordered w-full mb-3" required>
 
-          <button type="submit" class="btn bg-teal-600 text-white w-full mt-2 hover:bg-teal-700">Masuk</button>
-        </form>
-      </fieldset>
-    </div>
+                            <button type="submit"
+                                class="btn bg-teal-600 text-white w-full mt-2 hover:bg-teal-700">Masuk</button>
+                        </form>
+                    </fieldset>
+                </div>
 
-    <!-- Register Tab -->
-    <div id="registerTab" class="auth-tab hidden">
-      <fieldset class="border border-teal-300 rounded-lg p-4">
-        <legend class="text-teal-600 px-2 font-semibold">Daftar</legend>
+                <!-- Register Tab -->
+                <div id="registerTab" class="auth-tab hidden">
+                    <fieldset class="border border-teal-300 rounded-lg p-4">
+                        <legend class="text-teal-600 px-2 font-semibold">Daftar</legend>
 
-        <form method="POST" action="{{ route('register') }}">
-          @csrf
-          <label class="label">Nama Lengkap</label>
-          <input name="name" type="text" placeholder="Nama Lengkap" class="input input-bordered w-full mb-3" required>
+                        <form method="POST" action="{{ route('register') }}">
+                            @csrf
+                            <label class="label">Nama Lengkap</label>
+                            <input name="name" type="text" placeholder="Nama Lengkap"
+                                class="input input-bordered w-full mb-3" required>
 
-          <label class="label">Email</label>
-          <input name="email" type="email" placeholder="Email" class="input input-bordered w-full mb-3" required>
+                            <label class="label">Email</label>
+                            <input name="email" type="email" placeholder="Email"
+                                class="input input-bordered w-full mb-3" required>
 
-          <label class="label">Password</label>
-          <input name="password" type="password" placeholder="Password (min. 8 karakter)" class="input input-bordered w-full mb-3" required minlength="8">
+                            <label class="label">Password</label>
+                            <input name="password" type="password" placeholder="Password (min. 8 karakter)"
+                                class="input input-bordered w-full mb-3" required minlength="8">
 
-          <label class="label">Konfirmasi Password</label>
-          <input name="password_confirmation" type="password" placeholder="Konfirmasi Password" class="input input-bordered w-full mb-3" required>
+                            <label class="label">Konfirmasi Password</label>
+                            <input name="password_confirmation" type="password" placeholder="Konfirmasi Password"
+                                class="input input-bordered w-full mb-3" required>
 
-          <button type="submit" class="btn bg-teal-600 text-white w-full mt-2 hover:bg-teal-700">Daftar</button>
-        </form>
-      </fieldset>
-    </div>
-  </div>
-</div>
+                            <button type="submit"
+                                class="btn bg-teal-600 text-white w-full mt-2 hover:bg-teal-700">Daftar</button>
+                        </form>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -123,24 +156,35 @@
     </div>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-KuJQTXqcZiyvlCYw"></script>
     <script>
-  const tabs = document.querySelectorAll('[data-tab]');
-  const tabContents = {
-    login: document.getElementById('loginTab'),
-    register: document.getElementById('registerTab'),
-  };
+        const tabs = document.querySelectorAll('[data-tab]');
+        const tabContents = {
+            login: document.getElementById('loginTab'),
+            register: document.getElementById('registerTab'),
+        };
 
-  tabs.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabs.forEach(b => b.classList.remove('border-teal-600', 'text-teal-600'));
-      btn.classList.add('border-teal-600', 'text-teal-600');
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabs.forEach(b => b.classList.remove('border-teal-600', 'text-teal-600'));
+                btn.classList.add('border-teal-600', 'text-teal-600');
 
-      Object.values(tabContents).forEach(c => c.classList.add('hidden'));
-      tabContents[btn.dataset.tab].classList.remove('hidden');
-    });
-  });
+                Object.values(tabContents).forEach(c => c.classList.add('hidden'));
+                tabContents[btn.dataset.tab].classList.remove('hidden');
+            });
+        });
 
-  document.getElementById('closeAuthModal').addEventListener('click', () => {
-    document.getElementById('authModal').classList.add('hidden');
+        document.getElementById('closeAuthModal').addEventListener('click', () => {
+            document.getElementById('authModal').classList.add('hidden');
+        });
+    </script>
+    <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alert = document.getElementById('alert');
+    if (alert) {
+      setTimeout(() => {
+        alert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+        setTimeout(() => alert.remove(), 500); // Hapus dari DOM setelah transisi
+      }, 3000); // 3 detik
+    }
   });
 </script>
 
@@ -179,6 +223,8 @@
                 });
         }
     </script>
+
+
 </body>
 
 </html>

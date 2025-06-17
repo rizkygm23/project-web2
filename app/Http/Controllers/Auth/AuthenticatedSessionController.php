@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-
+use Illuminate\Validation\ValidationException;
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -24,13 +24,18 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
+{
+    try {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->back()
+                         ->with('success', 'Berhasil login!');
+    } catch (ValidationException $e) {
+        return back()->with('error', 'Email atau password salah!');
     }
+}
+
 
     /**
      * Destroy an authenticated session.

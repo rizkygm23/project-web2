@@ -1,14 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Judul Kategori -->
-    <div class="max-w-6xl mx-auto px-4 mb-6">
-        <h2 class="text-sm font-semibold text-teal-800 bg-teal-200 rounded-full px-6 py-2 w-fit">
-            {{ $selectedCategory->name . ' (' . $posts->total() . ')' }}</h2>
-    </div>
+<div class="max-w-6xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold text-teal-600 mb-8 text-center">Semua Berita</h1>
 
-    <!-- Daftar Berita dalam Grid -->
-    <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @foreach ($posts as $post)
             <div
                         class="bg-white  skeleton rounded-xl  hover:shadow-md transition overflow-hidden flex  flex-col h-fit md:h-full">
@@ -36,8 +32,8 @@
         @endforeach
     </div>
 
-    <!-- Pagination -->
-    <div class="max-w-6xl mx-auto px-4 mt-8">
+    <div class="mt-8">
         {{ $posts->links() }}
     </div>
+</div>
 @endsection
